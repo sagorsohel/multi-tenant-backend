@@ -5,6 +5,8 @@ const tenantSchema = new mongoose.Schema({
   shopName: { type: String, required: true }, // Business/shop name
   subdomain: { type: String, required: true, unique: true }, // ex: sohel.localhost.com
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Superadmin ID
+  theme: { type: mongoose.Schema.Types.ObjectId, ref: "Theme" }, // link to theme
+
 }, { timestamps: true });
 
 export default mongoose.model("Tenant", tenantSchema);
