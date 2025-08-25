@@ -7,6 +7,7 @@ import superAdminRoutes from "./routes/superAdminRoutes.js";
 import tenantRoutes from "./routes/tenantRoutes.js";
 
 dotenv.config();
+
 connectDB();
 
 const app = express();
