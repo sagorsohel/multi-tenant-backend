@@ -54,7 +54,7 @@ router.post("/tenants", protectSuperAdmin, async (req, res) => {
     const tenantUser = new User({ name, email, password: hashedPassword, role: "tenant" });
     await tenantUser.save();
 
-    const tenant = new Tenant({ name, shopName, subdomain, createdBy: req.user._id });
+    const tenant = new Tenant({ name, shopName, subdomain, createdBy: req.user._id,email });
     await tenant.save();
 
     tenantUser.tenants.push(tenant._id);
@@ -66,4 +66,21 @@ router.post("/tenants", protectSuperAdmin, async (req, res) => {
   }
 });
 
+// Get All Tenants (SuperAdmin only)
+router.get("/tenants", protectSuperAdmin, async (req, res) => {
+    try {
+      const tenants = await Tenant.find()
+        .populate("createdBy", "email role") // optional: show who created
+        .sort({ createdAt: -1 });
+  
+      res.json({
+        success: true,
+        message: "Tenants fetched successfully",
+        tenants,
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  });
+  
 export default router;

@@ -6,6 +6,29 @@ import { protectSuperAdmin, protectTenant } from "../middleware/auth.js";
 
 const router = express.Router();
 
+
+// 🌍 Public route: get active theme by tenant subdomain
+router.get("/public/:subdomain", async (req, res) => {
+    try {
+      const { subdomain } = req.params;
+  
+      // Find tenant by subdomain
+      const tenant = await Tenant.findOne({ subdomain }).populate("theme");
+      if (!tenant) {
+        return res.status(404).json({ success: false, message: "Tenant not found" });
+      }
+  
+      // Send tenant's active theme
+      res.json({
+        success: true,
+        theme: tenant.theme || null, // could be null if no theme selected
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  });
+  
+
 // ✅ Get all available themes (tenant can view)
 // routes/themeRoutes.js
 router.get("/all", protectTenant, async (req, res) => {

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Tenant from "../models/Tenant.js";
-import { protectTenant } from "../middleware/auth.js";
+
 
 const router = express.Router();
 
@@ -25,4 +25,17 @@ router.post("/login", async (req, res) => {
   res.json({ success: true, message: "Tenant login successful", token, tenant: tenantMatch });
 });
 
+
+// Public - get tenant by subdomain
+router.get("/:subdomain", async (req, res) => {
+  try {
+    const tenant = await Tenant.findOne({ subdomain: req.params.subdomain });
+    if (!tenant) {
+      return res.status(404).json({ success: false, message: "Tenant not found" });
+    }
+    res.json({ success: true, tenant });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 export default router;

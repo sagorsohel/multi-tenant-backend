@@ -17,5 +17,17 @@ router.get("/", protectTenant, async (req, res) => {
   const products = await Product.find({ tenant: req.user.tenant });
   res.json({ success: true, products });
 });
+// 🌍 Public route: get products by tenant
+router.get("/public/:tenant", async (req, res) => {
+  try {
+    const { tenant } = req.params;
+    const products = await Product.find({ tenant });
+    res.json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
 
 export default router;
